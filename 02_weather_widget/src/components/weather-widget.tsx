@@ -24,7 +24,7 @@ interface WeatherData {
   feelslike_c: number;
   cloud: number;
   humidity: number;
-  wind_mph: number;
+  wind_kph: number;
 }
 
 const WeatherWidget = () => {
@@ -32,6 +32,8 @@ const WeatherWidget = () => {
   const [weather, setWeather] = useState<WeatherData | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [bgImage, setBgImage] = useState<string>("")
+
 
   const searchWeather = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -45,14 +47,15 @@ const WeatherWidget = () => {
 
     setIsLoading(true);
     setError(null);
-    setWeather(null)
+    setWeather(null);
 
     const fetchWeather = await fetch(
       `https://api.weatherapi.com/v1/current.json?key=${process.env.NEXT_PUBLIC_API_KEY}&q=${trimmedLocation}`
     );
     try {
       const res = await fetchWeather.json();
-      console.log(res);
+      // console.log(res);
+      
       const weatherData: WeatherData = {
         name: res.location.name,
         country: res.location.country,
@@ -63,16 +66,24 @@ const WeatherWidget = () => {
         feelslike_c: res.current.feelslike_c,
         cloud: res.current.cloud,
         humidity: res.current.humidity,
-        wind_mph: res.current.wind_mph,
+        wind_kph: res.current.wind_kph,
       };
 
+      const fetchimage = await fetch(
+        `https://pixabay.com/api/?key=${process.env.NEXT_PUBLIC_IMAGE_API_KEY}&q=${encodeURIComponent(weatherData.text+"-sky-background")}`
+      );
+
+      const dat = await fetchimage.json()
+      console.log(dat.hits[0].largeImageURL)
+      
+      setBgImage(dat.hits[0].largeImageURL)
       setWeather(weatherData);
       setError(null);
       setIsLoading(false);
       getTemperature();
       console.log(weatherData);
-    } catch (error){
-      console.log("An error:", error)
+    } catch (error) {
+      console.log("An error:", error);
       setError("City not found. Please try again!");
       setIsLoading(false);
     }
@@ -100,13 +111,15 @@ const WeatherWidget = () => {
               height={1000}
               width={1000}
             />
-            
+
             <div className="flex justify-end">
-            <p
-    className={`text-center font-semibold text-md -mt-3 ${
-      weather?.text &&  weather.text.split(" ").length < 2 ? "pe-5" : "w-11/12"
-    }`}
-  >
+              <p
+                className={`text-center font-semibold text-md -mt-3 ${
+                  weather?.text && weather.text.split(" ").length < 2
+                    ? "pe-5"
+                    : "w-11/12"
+                }`}
+              >
                 {weather?.text}
               </p>
             </div>
@@ -115,22 +128,22 @@ const WeatherWidget = () => {
 
         <div className="flex items-center justify-around my-3 gap-3">
           <div className="flex flex-col justify-center items-center rounded-xl bg-white/20 px-2 py-4 w-1/3">
-            <div className="flex justify-center items-center gap-1">
-              Cloud <WiCloudy className="text-3xl" />
+            <div className="flex justify-center items-center gap-1 text-sm md:text-base">
+              Cloud <WiCloudy className="text-lg md:text-3xl" />
             </div>
-            <p>{weather?.cloud}%</p>
+            <p className="text-sm md:text-base">{weather?.cloud}%</p>
           </div>
           <div className="flex flex-col justify-center items-center rounded-xl bg-white/20 px-2 py-4 w-1/3">
-            <div className="flex justify-center items-center gap-1">
-              Humidity <WiHumidity className="text-3xl" />
+            <div className="flex justify-center items-center gap-1 text-sm md:text-base">
+              Humidity <WiHumidity className="text-lg md:text-3xl" />
             </div>
-            <p>{weather?.humidity}%</p>
+            <p className="text-sm md:text-base">{weather?.humidity}%</p>
           </div>
           <div className="flex flex-col justify-center items-center rounded-xl bg-white/20 px-2 py-4 w-1/3">
-            <div className="flex justify-center items-center gap-1">
-              Wind <WiCloudyWindy className="text-3xl" />
+            <div className="flex justify-center items-center gap-1 text-sm md:text-base">
+              Wind <WiCloudyWindy className="text-lg md:text-3xl" />
             </div>
-            <p>{weather?.wind_mph} mph</p>
+            <p className="text-sm md:text-base">{weather?.wind_kph} kph</p>
           </div>
         </div>
       </div>
@@ -138,8 +151,12 @@ const WeatherWidget = () => {
   };
 
   return (
+    <div className="flex flex-col items-center justify-center h-screen bg-cover bg-center px-4" style={{
+      backgroundColor: "rgba(0, 0, 0, 0.8)", 
+      backgroundImage: `url(${bgImage})`,
+    }}>
     <div className="w-full max-w-md">
-      <Card className="text-center bg-white/50 backdrop-blur-xl rounded-lg border border-white/20 shadow-white">
+      <Card className="text-center bg-white/40 backdrop-blur-xl rounded-lg border border-white/20 shadow-white">
         <CardHeader>
           <CardTitle className="text-xl font-bold">Weather Widget</CardTitle>
           <CardDescription className="text-white">
@@ -158,7 +175,10 @@ const WeatherWidget = () => {
                 setLocation(e.target.value);
               }}
             />
-            <Button type="submit"  className={`${isLoading ? "cursor-not-allowed opacity-50" : ""}`}>
+            <Button
+              type="submit"
+              className={`${isLoading ? "cursor-not-allowed opacity-50" : ""}`}
+            >
               {isLoading ? "Searching..." : "Search"}
             </Button>
           </form>
@@ -168,6 +188,7 @@ const WeatherWidget = () => {
           {weather && <div className="text-white">{getTemperature()}</div>}
         </CardContent>
       </Card>
+    </div>
     </div>
   );
 };
