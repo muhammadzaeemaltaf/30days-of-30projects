@@ -79,19 +79,19 @@ const RandomUser = () => {
       {error && <div className="text-red-500">{error}</div>}
       {user && (
         <Card className="max-w-md w-full relative overflow-hidden">
-          <CardHeader className="h-36 bg-gray-600 relative">
+          <CardHeader className="h-32 bg-gray-600 relative">
             <Image
               src={user.image}
               alt={`Profile picture of ${user.name}`}
-              height={130}
-              width={130}
-              className="rounded-full border-4 border-white absolute bottom-0 left-[20%] transform -translate-x-1/2 translate-y-1/2"
+              height={100}
+              width={100}
+              className="rounded-full border-4 border-white absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2"
             />
-            <CardTitle className="flex items-end gap-2 absolute -bottom-[35%] left-1/3 ml-2 w-full text-2xl">
-               {user.name}
-            </CardTitle>
           </CardHeader>
-          <CardContent className="p-6 pt-20 text-center space-y-3">
+          <CardContent className="px-6 pt-16 text-center space-y-3">
+            <CardTitle className="flex items-start justify-center gap-2 text-xl">
+              <UserIcon /> {user.name}
+            </CardTitle>
             <CardDescription className="flex flex-col items-center justify-center gap-2">
               <div className="flex items-end justify-center gap-2">
                 <MailIcon /> {user.email}
@@ -104,7 +104,7 @@ const RandomUser = () => {
               </div>
             </CardDescription>
           </CardContent>
-          <CardFooter>
+          <CardFooter className="pt-0">
             <Button
               variant="outline"
               className="mt-4 mx-auto"
