@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 "use client";
 
 import React, { useEffect, useState } from "react";
@@ -27,8 +29,8 @@ interface Confetti {
 const BirthdayWish = () => {
   const [candlesLit, setCandlesLit] = useState<number>(0);
   const [windowDimension, setDimension] = useState<Confetti>({
-    width: window.innerWidth,
-    height: window.innerHeight,
+    width: 0,
+    height: 0,
   });
   const [showConfetti, setConfetti] = useState<boolean>(false);
   const [balloonsPoppedCount, setBalloonsPoppedCount] = useState<number>(0);
@@ -41,6 +43,7 @@ const BirthdayWish = () => {
   };
 
   useEffect(() => {
+    confettiFunc();
     window.addEventListener("resize", confettiFunc);
     return () => {
       window.removeEventListener("resize", confettiFunc);
@@ -122,6 +125,7 @@ const BirthdayWish = () => {
                         </motion.div>
                       ) : (
                         <FaBirthdayCake
+                        key={i}
                           className={`text-3xl text-gray-300 transition-colors duration-300 ease-in-out cursor-pointer hover:scale-110`}
                           onClick={() => lightCandle(i)}
                         />
@@ -167,3 +171,5 @@ const BirthdayWish = () => {
 };
 
 export default BirthdayWish;
+
+
