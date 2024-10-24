@@ -7,7 +7,6 @@ import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { CgMathDivide, CgMathMinus, CgMathPlus } from "react-icons/cg";
 import { RxCross2 } from "react-icons/rx";
-import { log } from "node:console";
 
 const Calculator = () => {
   const [num1, setNum1] = useState<string>("");
