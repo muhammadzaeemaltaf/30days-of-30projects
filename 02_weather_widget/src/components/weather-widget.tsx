@@ -84,6 +84,7 @@ const WeatherWidget = () => {
       console.log(weatherData);
     } catch (error) {
       console.log("An error:", error);
+      setBgImage("")
       setError("City not found. Please try again!");
       setIsLoading(false);
     }
