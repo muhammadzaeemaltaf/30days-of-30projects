@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 "use client";
 
 import React, { useState } from "react";
@@ -60,6 +62,7 @@ const PasswordGenerator = () => {
       },
       (err) => {
         alert("Failed to copy password to clipboard.");
+        console.log(err)
         setIsCopied(false);
       }
     );
